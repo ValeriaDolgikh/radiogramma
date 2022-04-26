@@ -4,7 +4,7 @@
 
 #define MAX_SIZE_NAME  128
 #define MAX_SIZE_PHONE 112
-#define ERROR_FILE_OPEN -1
+#define ERROR_FILE_OPEN -2
 #define NUMBER_OF_LEADERS 7
 
 typedef struct
