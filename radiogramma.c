@@ -9,7 +9,7 @@
 #define MAX_SIZE_UP_PHONE   11
 
 #ifndef SIZE_OF_CHAR
-	#define SIZE_OF_CHAR  8
+	#define SIZE_OF_CHAR    8
 #endif
 
 #define TOTAL_LETTERS       (TOTAL_SYMBOLS/SIZE_OF_CHAR) //210
@@ -18,9 +18,10 @@
 
 #define MAX_SIZE_UP_NAME    (MAX_SIZE_NAME/SIZE_OF_CHAR) //19
 
-#define ERROR_FILE_OPEN     -1
+#define ERROR_FILE_OPEN               -1
+#define ERROR_NUMBER_OF_SIMBOLS_READ  -2
 
-#define ASCII_OFFSET        48
+#define ASCII_OFFSET                  48
 
 typedef struct
 {
@@ -50,6 +51,11 @@ int main()
 		printf("Error opening file");
 		return ERROR_FILE_OPEN;
 	}
+	else if (is_read == ERROR_NUMBER_OF_SIMBOLS_READ)
+	{
+		printf("Error number of simbols read");
+		return ERROR_NUMBER_OF_SIMBOLS_READ;
+	}
 
 	c_to_bin(all_simbols);
 
@@ -58,7 +64,6 @@ int main()
 	
 	bin_to_ASCII(all_simbols, simbols_in_ASCII);
 	put_simbols_in_struct(simbols_in_ASCII, p_leaders);
-	
 	print_leaders(NUMBER_OF_LEADERS, p_leaders);
 	
 	return 0;
@@ -68,13 +73,17 @@ int read_leaders(char* all_simbols)
 {
 	FILE *my_file = NULL;
 	my_file = fopen("C:/Users/UserPC/Desktop/c++/rd/radiogramma/data.dat", "r");
-	
 	if (my_file == NULL)
 	{
         return ERROR_FILE_OPEN;
     }
     
     int fread_res = fread(all_simbols, sizeof(char), TOTAL_SYMBOLS, my_file);
+    if (fread_res < TOTAL_SYMBOLS)
+    {
+    	return ERROR_NUMBER_OF_SIMBOLS_READ;
+    }
+
 	fclose(my_file);
 	return 0;
 }
@@ -129,20 +138,34 @@ void put_simbols_in_struct(const char* const simbols_in_ASCII, Persone* p_leader
 		for (unsigned int i = min; i < max; i++)
 		{
 			p_leaders[n].up_name[i] = simbols_in_ASCII[i];
-			printf("%c", p_leaders[n].up_name[i]);
 		}
 		for (unsigned int i = max; i < (max + MAX_SIZE_UP_PHONE); i++)
 		{
 			p_leaders[n].up_phone[i] = simbols_in_ASCII[i];
+		}
+		min = max + MAX_SIZE_UP_PHONE;
+		max = min + MAX_SIZE_UP_NAME;
+	}
+}
+
+void print_leaders (int num, const Persone* const p_leaders)
+{
+	int min = 0;
+	int max = MAX_SIZE_UP_NAME;
+
+	printf("Names             Phones\n");
+	for (unsigned int n = 0; n < num; n++)
+	{
+		for (unsigned int i = min; i < max; i++)
+		{
+			printf("%c", p_leaders[n].up_name[i]);
+		}
+		for (unsigned int i = max; i < (max + MAX_SIZE_UP_PHONE); i++)
+		{
 			printf("%c", p_leaders[n].up_phone[i]);	
 		}
 		min = max + MAX_SIZE_UP_PHONE;
 		max = min + MAX_SIZE_UP_NAME;
 		printf("\n");
 	}
-}
-
-void print_leaders (int num, const Persone* const p_leaders)
-{
-	
 }
